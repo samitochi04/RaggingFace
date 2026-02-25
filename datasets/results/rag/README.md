@@ -16,8 +16,6 @@ This project is a **Streamlit-based smart industrial quality assistant** demonst
 
 ```bash
 pip install -r requirements.txt
-
-(uses `opencv-python-headless` to avoid GUI dependencies)
 ```
 
 3. Run the app:
@@ -27,9 +25,6 @@ streamlit run ragging_face/app.py
 ```
 
 No paid APIs or authentication are required.
-
-**System dependencies:**
-On Linux hosts you may need `libGL` (e.g. `apt install libgl1-mesa-glx`) for OpenCV. The vision module checks for OpenCV at startup and will display an error message if the library isn't available.
 
 ## Structure
 

@@ -1,15 +1,30 @@
-import cv2
-import numpy as np
-from ultralytics import YOLO
+try:
+    import cv2
+    import numpy as np
+except ImportError:
+    cv2 = None
+    np = None
 
-# load model once
+# delay YOLO import until needed
 _model = None
+
+
+def _import_yolo():
+    try:
+        from ultralytics import YOLO
+        return YOLO
+    except ImportError:
+        return None
 
 def load_model():
     global _model
     if _model is None:
-        # using yolov8n for speed
-        _model = YOLO('yolov8n.pt')
+        if cv2 is None:
+            raise RuntimeError("OpenCV not available; cannot load vision model")
+        YoloCls = _import_yolo()
+        if YoloCls is None:
+            raise RuntimeError("YOLO (ultralytics) library not installed")
+        _model = YoloCls('yolov8n.pt')
     return _model
 
 
@@ -22,6 +37,8 @@ def detect_defects(image_path: str):
     Returns:
         dict with keys: 'image', 'boxes', 'scores', 'labels'
     """
+    if cv2 is None:
+        raise RuntimeError("OpenCV is not available; vision module cannot run")
     model = load_model()
     results = model(image_path)
     # results is a list of Results objects; take first

@@ -1,2 +1,12 @@
-datasets
-rag-venv
+# local dataset storage
+ragging_face/datasets/
+
+# virtual environment
+rag-venv/
+
+# container definitions
+Dockerfile
+
+# python bytecode
+__pycache__/
+*.pyc

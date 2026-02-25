@@ -30,25 +30,31 @@ if 'uploaded_docs' not in st.session_state:
 
 def vision_tab():
     st.header("Vision Module")
+    if vision.cv2 is None:
+        st.error("Vision functionality is unavailable (OpenCV import failed). Ensure libGL is installed on the host.")
+        return
     uploaded = st.file_uploader("Upload image for defect detection", type=['png', 'jpg', 'jpeg'])
     if uploaded:
         img = Image.open(uploaded)
         buf = io.BytesIO()
         img.save(buf, format='PNG')
-        outdir = os.path.join("datasets", "results", "vision")
+        outdir = os.path.join(BASE_DATASET, "vision")
         os.makedirs(outdir, exist_ok=True)
         path = os.path.join(outdir, uploaded.name)
         with open(path, 'wb') as f:
             f.write(buf.getvalue())
         st.success(f"Image saved to {path}")
-        results = vision.detect_defects(path)
-        st.image(results['image'], caption="uploaded image", use_column_width=True)
-        if results['boxes']:
-            st.write("Detected objects / defects:")
-            for b in results['boxes']:
-                st.write(b)
-        else:
-            st.write("No objects detected.")
+        try:
+            results = vision.detect_defects(path)
+            st.image(results['image'], caption="uploaded image", use_column_width=True)
+            if results['boxes']:
+                st.write("Detected objects / defects:")
+                for b in results['boxes']:
+                    st.write(b)
+            else:
+                st.write("No objects detected.")
+        except Exception as e:
+            st.error(f"Detection failed: {e}")
         # no cleanup; keep file for records
 
 
@@ -56,7 +62,7 @@ def production_tab():
     st.header("Production / Traceability Module")
     uploaded = st.file_uploader("Upload production CSV log", type=['csv'])
     if uploaded:
-        outdir = os.path.join("datasets", "results", "production")
+        outdir = os.path.join(BASE_DATASET, "production")
         os.makedirs(outdir, exist_ok=True)
         path = os.path.join(outdir, uploaded.name)
         with open(path, 'wb') as f:
@@ -92,7 +98,7 @@ def rag_tab():
     uploaded = st.file_uploader("Add documents", accept_multiple_files=True, type=['pdf', 'txt', 'md'])
     if uploaded:
         paths = []
-        outdir = os.path.join("datasets", "results", "rag")
+        outdir = os.path.join(BASE_DATASET, "rag")
         os.makedirs(outdir, exist_ok=True)
         for f in uploaded:
             p = os.path.join(outdir, f.name)
@@ -137,11 +143,11 @@ def rag_tab():
 
 def dashboard_tab():
     st.header("Smart Dashboard")
-    prod_dir = os.path.join("datasets","results","production")
+    prod_dir = os.path.join(BASE_DATASET,"production")
     prod_files = os.listdir(prod_dir) if os.path.isdir(prod_dir) else []
     if prod_files:
         st.write(f"Stored production files: {len(prod_files)}")
-    vis_dir = os.path.join("datasets","results","vision")
+    vis_dir = os.path.join(BASE_DATASET,"vision")
     vis_files = os.listdir(vis_dir) if os.path.isdir(vis_dir) else []
     if vis_files:
         st.write(f"Stored vision images: {len(vis_files)}")
@@ -158,7 +164,7 @@ def dashboard_tab():
         if not prod_files:
             st.write("No production data uploaded yet.")
     st.markdown("---")
-    rag_dir = os.path.join("datasets","results","rag")
+    rag_dir = os.path.join(BASE_DATASET,"rag")
     rag_files = os.listdir(rag_dir) if os.path.isdir(rag_dir) else []
     if 'rag_store' in st.session_state and st.session_state.rag_store.index is not None:
         st.subheader("Documents indexed for RAG")
