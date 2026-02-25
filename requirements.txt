@@ -1,11 +1,14 @@
+# use CPU-only PyTorch builds to avoid CUDA/nvidia dependencies
+--find-links https://download.pytorch.org/whl/cpu
+
 streamlit==1.26.0
 pandas==2.2.3
 numpy==1.26.4
 plotly==5.16.1
-torchvision==0.16.2
+torch==2.1.2+cpu
+torchvision==0.16.2+cpu
 langchain==0.0.310
 sentence-transformers==2.2.2
 faiss-cpu==1.8.0.post1
 transformers==4.34.0
-torch==2.1.2
 pypdf2==3.0.1

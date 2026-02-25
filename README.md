@@ -12,12 +12,16 @@ This project is a **Streamlit-based smart industrial quality assistant** demonst
 ## Setup
 
 1. Create a virtual environment (venv/conda) and activate it.
-2. Install dependencies:
+2. Install dependencies (CPU-only PyTorch wheel ensures a lean container):
 
 ```bash
 pip install -r requirements.txt
 
-(uses `opencv-python-headless` to avoid GUI dependencies)
+# requirements.txt already contains a --find-links pointing to the
+# PyTorch CPU wheels and specifies torch==2.1.2+cpu, torchvision==0.16.2+cpu.
+
+# the project no longer depends on OpenCV, but headless package
+# is kept for compatibility with earlier versions.
 ```
 
 3. Run the app:
