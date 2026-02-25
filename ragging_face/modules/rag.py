@@ -39,9 +39,10 @@ class RAGStore:
 
 
 # helper to read pdf or text
-from utils.file_utils import extract_text_from_file
+# perform import lazily and use full package path to avoid name collisions
 
 def ingest_files(file_paths: List[str], rag_store: RAGStore):
+    from ragging_face.utils.file_utils import extract_text_from_file
     texts = []
     metas = []
     for path in file_paths:

@@ -1,5 +1,8 @@
 import os
 import io
+import sys
+import types
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -30,9 +33,6 @@ if 'uploaded_docs' not in st.session_state:
 
 def vision_tab():
     st.header("Vision Module")
-    if vision.cv2 is None:
-        st.error("Vision functionality is unavailable (OpenCV import failed). Ensure libGL is installed on the host.")
-        return
     uploaded = st.file_uploader("Upload image for defect detection", type=['png', 'jpg', 'jpeg'])
     if uploaded:
         img = Image.open(uploaded)
