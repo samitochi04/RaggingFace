@@ -5,7 +5,7 @@ ragging_face/datasets/
 rag-venv/
 
 # container definitions
-Dockerfile
+# Dockerfile
 
 # python bytecode
 __pycache__/
