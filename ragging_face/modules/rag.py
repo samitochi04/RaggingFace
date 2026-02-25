@@ -42,8 +42,15 @@ class RAGStore:
 # perform import lazily using relative package path
 
 def ingest_files(file_paths: List[str], rag_store: RAGStore):
-    # avoid top-level import errors by resolving relative to package
-    from ..utils.file_utils import extract_text_from_file
+    # dynamically load the utility module to avoid import path issues
+    import importlib.util
+    util_path = os.path.join(os.path.dirname(__file__), '../utils/file_utils.py')
+    util_path = os.path.abspath(util_path)
+    spec = importlib.util.spec_from_file_location('file_utils', util_path)
+    file_utils = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(file_utils)  # type: ignore
+    extract_text_from_file = file_utils.extract_text_from_file
+
     texts = []
     metas = []
     for path in file_paths:
