@@ -38,6 +38,8 @@ The vision module now uses `torchvision` and does not require OpenCV; there is n
 - `ragging_face/utils/` – helper utilities
 - `ragging_face/datasets/` – sample data generators and storage
   - `testing.py` generates fake production logs and saves results under `datasets/results/{production,rag,vision}`
+- `ragging_face/cleanup.py` – maintenance script to remove uploaded files older than a given number of days. Intended to be run daily (e.g. via cron) to avoid data buildup.
+
 - `requirements.txt` – Python dependencies
 
 ## Modules
